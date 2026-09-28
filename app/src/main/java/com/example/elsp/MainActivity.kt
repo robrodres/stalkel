@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.geometry.Offset
@@ -54,10 +55,23 @@ class MainActivity : ComponentActivity() {
                     )
                     {
                         Text(today)
+
+                        Spacer(modifier = Modifier.height(15.dp))
+
                         Text("Min: ${minPr?.pricePerKwh} €/kWh (${minPr?.time})")
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         Text("Peak: ${peakPr?.pricePerKwh} €/kWh (${peakPr?.time})")
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         Text("Average: $averagePr €/kWh")
+
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Canvas(
                         modifier = Modifier
