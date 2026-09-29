@@ -52,6 +52,10 @@ class MainActivity : ComponentActivity() {
         val minPr = prices.minByOrNull {it.pricePerKwh}
         val peakPr = prices.maxByOrNull {it.pricePerKwh}
         val averagePr = prices.map {it.pricePerKwh}.average()
+        val minV = prices.minOf { it.pricePerKwh }
+        val peakV = prices.maxOf { it.pricePerKwh }
+        val lowerMid = (averagePr + minV)/ 2
+        val upperMid = (peakV + averagePr) / 2
 
         val today = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
@@ -133,9 +137,11 @@ class MainActivity : ComponentActivity() {
                                         .width(50.dp),
                                     verticalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text("${peakPr?.pricePerKwh}")
-                                    Text("%.2f".format(averagePr))
-                                    Text("${minPr?.pricePerKwh}")
+                                    Text("%.3f".format(peakV))
+                                    Text("%.3f".format(upperMid))
+                                    Text("%.3f".format(averagePr))
+                                    Text("%.3f".format(lowerMid))
+                                    Text("%.3f".format(minV))
                                 }
 
                                 Canvas(
@@ -143,9 +149,12 @@ class MainActivity : ComponentActivity() {
                                         .fillMaxWidth()
                                         .height(250.dp)
                                 ) {
-                                    val minV = prices.minOf { it.pricePerKwh }
-                                    val peakV = prices.maxOf { it.pricePerKwh }
+
                                     val range = if (peakV - minV == 0.0) 1.0 else peakV - minV
+                                    //intermedios
+                                    val upperMidY = size.height - ((upperMid - minV) / range).toFloat() * size.height
+                                    val averageY = size.height - ((averagePr - minV) / range).toFloat() * size.height
+                                    val lowerMidY = size.height - ((lowerMid - minV) / range).toFloat() * size.height
 
                                     val points = prices.mapIndexed { index, price ->
                                         val x = index.toFloat() / (prices.size - 1) * size.width
@@ -166,6 +175,29 @@ class MainActivity : ComponentActivity() {
 
                                     //MARCAR {HORA ACTUAL} CON UN PUNTO EN LA lÌNEA
                                     //CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO
+
+                                    drawLine(
+                                        color = Color.White.copy(alpha = 0.3f),
+                                        start = Offset(0f, upperMidY),
+                                        end = Offset(size.width, upperMidY),
+                                        strokeWidth = 1f
+                                    )
+
+                                    drawLine(
+                                        color = Color.White.copy(alpha = 0.3f),
+                                        start = Offset(0f, averageY),
+                                        end = Offset(size.width, averageY),
+                                        strokeWidth = 1f
+                                    )
+
+                                    drawLine(
+                                        color = Color.White.copy(alpha = 0.3f),
+                                        start = Offset(0f, lowerMidY),
+                                        end = Offset(size.width, lowerMidY),
+                                        strokeWidth = 1f
+                                    )
+
+
 
                                     //LINE
                                     for (i in 0 until points.size - 1) {
