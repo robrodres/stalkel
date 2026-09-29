@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 
 
 class MainActivity : ComponentActivity() {
@@ -52,35 +55,74 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ElspTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    //COLOR FONDO
+                    containerColor = Color(127, 127, 255)) { innerPadding ->
                     Column(
                         modifier = Modifier
                             .padding(innerPadding)
                             .padding(16.dp)
                     )
                     {
-                        Text(today)
-
+                        //DATE TODAY
+                        Text(
+                            text = today,
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                            )
+                        //CAMBIAR DIVISAS SEGÚN PAÍS SELECCIONADO
                         Spacer(modifier = Modifier.height(15.dp))
 
-                        Text("Min: ${minPr?.pricePerKwh} €/kWh (${minPr?.time})")
+                        //MIN
+                        Row {
+                            Text("Min: ")
+
+                            Text(
+                                text = "${"%.3f".format(minPr?.pricePerKwh)} €/kWh",
+                                color = Color.Green
+                            )
+
+                             Text("(${minPr?.time})")
+                        }
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text("Peak: ${peakPr?.pricePerKwh} €/kWh (${peakPr?.time})")
+                        //MAX
+                        Row{
+                            Text("Peak: ")
+
+                            Text(
+                                text = "${"%.3f".format(peakPr?.pricePerKwh)} €/kWh",
+                                color = Color.Red
+                            )
+
+                            Text("(${peakPr?.time})")
+                        }
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text("Average: $averagePr €/kWh")
+                        //AVERAGE
+                        Row {
+                            Text("Average: ")
+
+                            Text(
+                                text = "${"%.3f".format(averagePr)} €/kWh",
+                                color = Color.Yellow
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-
+                        //CURRENT
+                        //CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO
 
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp)
+                                .background(Color.White)
                         ) {
                             Column(
                                 modifier = Modifier
