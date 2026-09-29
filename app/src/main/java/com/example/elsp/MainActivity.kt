@@ -33,6 +33,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 
@@ -57,129 +59,135 @@ class MainActivity : ComponentActivity() {
             ElspTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     //COLOR FONDO
-                    containerColor = Color(127, 127, 255)) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .padding(16.dp)
-                    )
-                    {
-                        //DATE TODAY
-                        Text(
-                            text = today,
-                            color = Color.White,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                            )
-                        //CAMBIAR DIVISAS SEGÚN PAÍS SELECCIONADO
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        //MIN
-                        Row {
-                            Text("Min: ")
-
-                            Text(
-                                text = "${"%.3f".format(minPr?.pricePerKwh)} €/kWh",
-                                color = Color.Green
-                            )
-
-                             Text("(${minPr?.time})")
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        //MAX
-                        Row{
-                            Text("Peak: ")
-
-                            Text(
-                                text = "${"%.3f".format(peakPr?.pricePerKwh)} €/kWh",
-                                color = Color.Red
-                            )
-
-                            Text("(${peakPr?.time})")
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        //AVERAGE
-                        Row {
-                            Text("Average: ")
-
-                            Text(
-                                text = "${"%.3f".format(averagePr)} €/kWh",
-                                color = Color.Yellow
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        //CURRENT
-                        //CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO
-
-                        Box(
+                    containerColor = Color(20, 20, 60)) { innerPadding ->
+                    CompositionLocalProvider(LocalContentColor provides Color.White){
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .background(Color.White)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(50.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text("${peakPr?.pricePerKwh}")
-                                Text("%.2f".format(averagePr))
-                                Text("${minPr?.pricePerKwh}")
+                                .padding(innerPadding)
+                                .padding(16.dp)
+                        )
+                        {
+                            //DATE TODAY
+                            Text(
+                                text = today,
+                                color = Color.White,
+                                textDecoration = TextDecoration.Underline,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                                )
+                            //CAMBIAR DIVISAS SEGÚN PAÍS SELECCIONADO
+                            Spacer(modifier = Modifier.height(15.dp))
+
+                            //MIN
+                            Row {
+                                Text("Min: ")
+
+                                Text(
+                                    text = "${"%.3f".format(minPr?.pricePerKwh)} €/kWh",
+                                    color = Color.Green
+                                )
+
+                                 Text("(${minPr?.time})")
                             }
 
-                            Canvas(
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            //MAX
+                            Row{
+                                Text("Peak: ")
+
+                                Text(
+                                    text = "${"%.3f".format(peakPr?.pricePerKwh)} €/kWh",
+                                    color = Color.Red
+                                )
+
+                                Text("(${peakPr?.time})")
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            //AVERAGE
+                            Row {
+                                Text("Average: ")
+
+                                Text(
+                                    text = "${"%.3f".format(averagePr)} €/kWh",
+                                    color = Color.Yellow
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            //MOSTRAR PRECIO DEL RANGO EN {HORA ACTUAL}
+                            //CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO
+
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(250.dp)
+                                    .background(Color.Gray)
                             ) {
-                                val minV = prices.minOf { it.pricePerKwh }
-                                val peakV = prices.maxOf { it.pricePerKwh }
-                                val range = if (peakV - minV == 0.0) 1.0 else peakV - minV
-
-                                val points = prices.mapIndexed { index, price ->
-                                    val x = index.toFloat() / (prices.size - 1) * size.width
-
-                                    val y =
-                                        size.height - ((price.pricePerKwh - minV) / range).toFloat() * size.height
-
-                                    Offset(x, y)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(50.dp),
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("${peakPr?.pricePerKwh}")
+                                    Text("%.2f".format(averagePr))
+                                    Text("${minPr?.pricePerKwh}")
                                 }
 
-                                //AXIS
-                                drawLine(
-                                    color = Color.Gray,
-                                    start = Offset(0f, 0f),
-                                    end = Offset(0f, size.height),
-                                    strokeWidth = 2f
-                                )
-                                //LINE
-                                for (i in 0 until points.size - 1) {
+                                Canvas(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(250.dp)
+                                ) {
+                                    val minV = prices.minOf { it.pricePerKwh }
+                                    val peakV = prices.maxOf { it.pricePerKwh }
+                                    val range = if (peakV - minV == 0.0) 1.0 else peakV - minV
+
+                                    val points = prices.mapIndexed { index, price ->
+                                        val x = index.toFloat() / (prices.size - 1) * size.width
+
+                                        val y =
+                                            size.height - ((price.pricePerKwh - minV) / range).toFloat() * size.height
+
+                                        Offset(x, y)
+                                    }
+
+                                    //AXIS
                                     drawLine(
-                                        color = Color.Black,
-                                        start = points[i],
-                                        end = points[i + 1],
-                                        strokeWidth = 5f
+                                        color = Color.Gray,
+                                        start = Offset(0f, 0f),
+                                        end = Offset(0f, size.height),
+                                        strokeWidth = 2f
                                     )
+
+                                    //MARCAR {HORA ACTUAL} CON UN PUNTO EN LA lÌNEA
+                                    //CODIGO CODIGO CODIGO CODIGO CODIGO CODIGO
+
+                                    //LINE
+                                    for (i in 0 until points.size - 1) {
+                                        drawLine(
+                                            color = Color.Red,
+                                            start = points[i],
+                                            end = points[i + 1],
+                                            strokeWidth = 5f
+                                        )
+                                    }
                                 }
                             }
-                        }
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("00:00")
-                            Text("00:15")
-                            Text("00:30")
-                            Text("00:45")
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("00:00")
+                                Text("00:15")
+                                Text("00:30")
+                                Text("00:45")
+                            }
                         }
                     }
                 }
